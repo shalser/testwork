@@ -1,0 +1,215 @@
+Здравствуйте! 
+ 
+Спасибо, что вы проявили интерес к вакансии Web-разработчик в компании Alef Development.
+ 
+Мы предлагаем вам выполнить тестовое задание, состоящее из 3 задач. После выполнения напишите, пожалуйста, Telegram-боту @alef_webdev_hh_bot — следуйте инструкциям, чтобы загрузить ваши ответы. В случае успешного прохождения автоматической проверки, ваше решение попадет на код-ревью к нашей команде.
+ 
+ 
+Задание 1.
+ 
+При помощи языка PHP создайте двумерный массив размером 6х6, заполните его числами из последовательности Фибоначчи таким образом, чтобы в углу [0][0] была единица, в ячейке [1][0] была единица, в ячейке [2][0] была цифра 2. Найдите сумму чисел находящихся на диагонали [5][0]-[0][5]
+Ответом является число.
+ 
+ 
+Задание 2.
+ 
+Нарисуйте в свободной форме схему следующей БД:
+1) есть ученики, учителя и классы
+2) каждый ученик учится в каком-то классе
+3) учитель может преподавать в одном или более классах
+4) в одном классе может преподавать один или более учителей
+ 
+Задание 3.
+ 
+Дан шифр ->11гe+20∆∆A+4µcњil->5•Ћ®†Ѓ p+5f-7Ќ¬f pro+10g+1悦ra->58->44m+1*m+2a喜er!
+Правила его расшифровки следующие: 
+ - Начинать чтение нужно с крайнего левого символа и двигаться вправо.
+ - Если вы сталкиваетесь с любым символом, кроме специальных обозначений, то данный символ без изменений попадает в результирующую строчку.
+ - Специальными обозначениями являются "->", "+", "-". После специального обозначения всегда идет число, являющееся аргументом.
+ - "->" — вам необходимо перейти к символу с номером, записанном в аргументе (счет начинается с 0).
+ - "+" — пропустить столько символов, сколько записано в аргументе. Отсчет начинается после аргумента.
+ - "-" — аналогично, но перемещение происходит назад (влево)
+ 
+Программа должна быть написана на PHP. Ответом является строчка.
+ 
+Конкретного срока выполнения задания нет, но чем быстрее оно выполнено, тем больше шанс получить работу при прочих равных показателях с другими соискателями. 
+ 
+-- 
+Asiya Ismagulova | Assistant | +7 495 230 22 68 ext. 704
+ 
+Alef Development www.alef.im
+
+----------------------
+fibonachi
+
+$a = 1;
+  $b = 1;
+  for ($i = 3; $i <= 10; $i++) {
+      $c = $a + $b;
+      $a = $b;
+      $b = $c;
+      echo $b;
+  }
+-----------------------------------
+Решение 1
+==================================
+function fib(): Generator {
+    $a = 1;
+    $b = 1;
+    while (true) {
+        yield $a;
+        [$a, $b] = [$b, $a + $b];
+    }
+}
+
+$n = 6;
+$m = 6;
+
+$arr = iterator_to_array(new LimitIterator(fib(), 0, $n*$m));
+$arr = array_chunk($arr, $n);
+$arr = array_map(null, ...$arr);
+echo '<pre>';
+var_dump($arr);
+echo '<pre>';
+
+----------------------------
+
+$array = [];
+$fibonacci = [1, 1];
+$index_fibonacci = 0;
+
+for ($i = 2; $i < 50; $i++) {
+    $fibonacci[$i] = $fibonacci[$i - 2] + $fibonacci[$i - 1];
+}
+
+for ($i = 0; $i < 6; $i++) {
+    for ($j = 0; $j < 6; $j++) {
+        $array[$j][$i] = $fibonacci[$index_fibonacci++];
+    }
+}
+
+print_r($array);
+-----------------------------
+$sum = 0;
+
+for ($i = 0; $i <= 5; $i++) {
+    $sum += $array[5 - $i][$i];
+}
+
+print_r($sum);
+
+-----------------------------------------------------------------------------------------
+3 задание
+===================================================
+declare(strict_types=1);
+
+$input = '->11гe+20∆∆A+4µcњil->5•Ћ®†Ѓ p+5f-7Ќ¬f pro+10g+1悦ra->58->44m+1*m+2a喜er!';
+
+class Decoder
+{
+    private $position   = 0;
+    private $output     = '';
+
+    private $state;
+
+    private const STATE_FREE        = 'processFree';
+    private const STATE_MINUS       = 'processMinus';
+    private const STATE_READ_NUMBER = 'processReadNumber';
+
+    private const METHOD_GO         = 'goStack';
+    private const METHOD_SKIP_RIGHT = 'skipStackRight';
+    private const METHOD_SKIP_LEFT  = 'skipStackLeft';
+
+    private $stack;
+    private $method;
+
+    public function decode(string $input): string
+    {
+        $this->position = 0;
+        $this->output   = '';
+        $this->state    = self::STATE_FREE;
+
+        $length = mb_strlen($input, 'UTF-8');
+
+        while ($this->position < $length){
+            $symbol = mb_substr($input, $this->position, 1, 'UTF-8');
+            $this->{$this->state}($symbol);
+        }
+
+        return $this->output;
+    }
+
+    private function processFree(string $symbol): void
+    {
+        switch ($symbol){
+            case '-':
+                $this->state = self::STATE_MINUS;
+                break;
+            case '+':
+                $this->method = self::METHOD_SKIP_RIGHT;
+                $this->state = self::STATE_READ_NUMBER;
+                break;
+            default:
+                $this->output .= $symbol;
+                break;
+        }
+
+        $this->position++;
+    }
+
+    private function processMinus(string $symbol): void
+    {
+        if($symbol === '>'){
+            $this->method   = self::METHOD_GO;
+            $this->state    = self::STATE_READ_NUMBER;
+            $this->position++;
+            return;
+        }
+
+        $this->method = self::METHOD_SKIP_LEFT;
+        $this->state = self::STATE_READ_NUMBER;
+    }
+
+    private function processReadNumber(string $symbol): void
+    {
+        if($this->isNumber($symbol)){
+            $this->stack .= $symbol;
+            $this->position++;
+            return;
+        }
+
+        if($this->stack === null){
+            throw new \InvalidArgumentException('Method has\'t number argument at position: '.$this->position);
+        }
+
+        $this->{$this->method}((int)$this->stack);
+        $this->stack    = null;
+        $this->method   = null;
+        $this->state    = self::STATE_FREE;
+
+    }
+
+    private function isNumber(string $symbol): bool
+    {
+        return !!preg_match('#[0-9]#',$symbol);
+    }
+
+    private function goStack(int $arg): void
+    {
+        $this->position = $arg;
+    }
+
+    private function skipStackRight(int $arg): void
+    {
+        $this->position += $arg;
+    }
+
+    private function skipStackLeft(int $arg): void
+    {
+        $this->position -= $arg;
+    }
+}
+
+
+$out = (new Decoder())->decode($input);
+echo $out;
