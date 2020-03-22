@@ -27,6 +27,8 @@ for ($i = 0; $i <= 90; $i++) {
             $str = mb_substr($input, $number, 1, "UTF-8");
             echo $str;
             $i = $number;
+            $number = '';
+            $dash = '';
 //                        var_dump($i);
 //        die();
 
@@ -47,10 +49,15 @@ for ($i = 0; $i <= 90; $i++) {
     } elseif (!is_numeric($str)) {
 //        var_dump($numberPlus);
 //        die();
-        $str = mb_substr($input, 18, 1, "UTF-8");
+        $i = $i + $numberPlus;
+        $str = mb_substr($input, $i, 1, "UTF-8");
         echo $str;
+        $numberPlus = '';
 
         continue;
+
+    }
+    elseif ($str === '-') {
 
     }
 }
