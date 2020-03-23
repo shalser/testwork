@@ -4,6 +4,7 @@ $input = '->11гe+20∆∆A+4µcњil->5•Ћ®†Ѓ p+5f-7Ќ¬f pro+10g+1悦ra->
 $dash = '';
 $number = '';
 $numberPlus = '';
+$numberMinus = '';
 $str = '';
 $i = 0;
 
@@ -25,14 +26,24 @@ for ($i = 0; $i <= 90; $i++) {
 //            var_dump($number);
 //        die();
             $str = mb_substr($input, $number, 1, "UTF-8");
-            echo $str;
-            $i = $number;
-            $number = '';
-            $dash = '';
+            $strP = preg_match('~[a-zA-Z0-9]~', $str);
+//            var_dump($strP);
+//        die();
+            if (($str === '->' || $str === '+' || $str === '-') && ($str !== $strP)) {
+
+                continue;
+            } else {
+                echo $str;
+                $i = $number;
+                $number = '';
+                $dash = '';
+                continue;
+            }
+
 //                        var_dump($i);
 //        die();
 
-            continue;
+
         }
     }
 
@@ -49,18 +60,70 @@ for ($i = 0; $i <= 90; $i++) {
     } elseif (!is_numeric($str)) {
 //        var_dump($numberPlus);
 //        die();
-        $i = $i + $numberPlus;
-        $str = mb_substr($input, $i, 1, "UTF-8");
-        echo $str;
-        $numberPlus = '';
 
-        continue;
+
+//        $strP = preg_match('~[a-zA-Z0-9]~', $str);
+//        if ($str !== $strP) {
+//            $i = $numberPlus;
+//            continue;
+//        }
+
+
+        $i = $i + $numberPlus;
+//                var_dump($i);
+//        die();
+        $str = mb_substr($input, $i, 1, "UTF-8");
+        $strP = preg_match('~[a-zA-Z0-9]~', $str);
+//        var_dump($strP);
+//        die();
+        if (($str === '->' || $str === '+' || $str === '-') && ($str !== $strP)) {
+//                            var_dump($i);
+//        die();
+//            var_dump($strP);
+//        die();
+            $numberPlus = '';
+            continue;
+        } else {
+            echo $str;
+
+
+
+            $numberPlus = '';
+            continue;
+        }
+
 
     }
     elseif ($str === '-') {
+        continue;
+    } elseif (is_numeric($str)) {
+        $numberMinus .= $str;
+    } elseif (!is_numeric($str)) {
+        $i = $i - $numberMinus;
+//                var_dump($i);
+//        die();
+        $str = mb_substr($input, $i, 1, "UTF-8");
+        $strP = preg_match('~[a-zA-Z0-9]~', $str);
+        if (($str === '->' || $str === '+' || $str === '-') && ($str !== $strP)) {
+//                            var_dump($i);
+//        die();
+//            var_dump($strP);
+//        die();
+            continue;
+        } else {
+            echo $str;
 
+
+
+            $numberMinus = '';
+            continue;
+        }
     }
 }
+
+
+
+
 
 function regExp($str)
 {
