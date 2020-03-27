@@ -1,6 +1,6 @@
 <?php
 
-$input = '->11гe+20∆∆A+4µcњil->5•Ћ®†Ѓ p+5f-7Ќ¬f pro+10g+1悦ra->58->44m+1*m+2a喜er!';
+$input = '+20∆∆A+4µcњil->5•Ћ®†Ѓ p+5f-7Ќ¬f pro+10g+1悦ra->58->44m+1*m+2a喜er!';
 $arrow = '';
 $number = '';
 $Plus = '';
@@ -16,8 +16,11 @@ for ($i = 0; $i <= 90; $i++) {
         $arrow = $something;
         $something = '';
     }
-    $str = mb_substr($input, $i, 1, "UTF-8");
+//    $str = mb_substr($input, $i, 1, "UTF-8");
     $strString = preg_match('~[a-zA-Z]~', $str);
+    if (is_numeric($str)) {
+        continue;
+    }
     if ($strString) {
         echo $str;
         continue;
@@ -28,7 +31,7 @@ for ($i = 0; $i <= 90; $i++) {
     }
     $strAll = preg_match('~[a-zA-Z0-9]~', $str);
     if ((!$strAll) && ($str === '+' || $str === '-' || $str === '>')) {
-        if ((!$strAll) && ($str === '+') {
+        if ($str === '+') {
         $Plus = $str;
         continue;
     }
@@ -39,11 +42,11 @@ for ($i = 0; $i <= 90; $i++) {
     if (!is_numeric($str)) {
         continue;
     }
-        $strP = preg_match('~[a-zA-Z0-9]~', $str);
-        if (!$strP) {
-            $i = $numberPlus;
-            continue;
-        }
+//        $strP = preg_match('~[a-zA-Z0-9]~', $str);
+//        if (!$strP) {
+//            $i = $Plus;
+//            continue;
+//        }
         $i += $Plus;
         $str = mb_substr($input, $i, 1, "UTF-8");
         $strP = preg_match('~[a-zA-Z0-9]~', $str);
@@ -59,6 +62,11 @@ for ($i = 0; $i <= 90; $i++) {
         $something .= $str;
         continue;
     }
+    if ($str === '-') {
+        $Minus = $str;
+        continue;
+    }
+
 }
 //    if ($arrow === '->') {
 //        if (is_numeric($str)) {
