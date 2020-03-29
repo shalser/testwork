@@ -101,9 +101,34 @@ for ($i = 0; $i <= 90; $i++) {
     if ($something === '-' && is_numeric($str)) {
         $Minus = $something;
         $number .= $str;
-        $str = mb_substr($input, $i, 1, "UTF-8");
         $something = '';
-        continue;
+        $str = mb_substr($input, $i, 1, "UTF-8");
+        $strString = preg_match('~[a-zA-Z]~', $str);
+        if ($strString && $number !== '' && $Plus === '+') {
+            $i += $number;
+            $str = mb_substr($input, $i, 1, "UTF-8");
+            $strString = preg_match('~[a-zA-Z]~', $str);
+            if ($strString) {
+                $result .= $str;
+                $i++;
+                $str = mb_substr($input, $i, 1, "UTF-8");
+                $strString = preg_match('~[a-zA-Z]~', $str);
+                if ($strString) {
+                    $result .= $str;
+                    $i++;
+                    $str = mb_substr($input, $i, 1, "UTF-8");
+                    $strString = preg_match('~[a-zA-Z]~', $str);
+                } else {
+                    $Minus = '';
+                    $number = '';
+                    continue;
+                }
+            }
+            continue;
+        } else {
+            continue;
+        }
+
     } else {
         if ($something === '-' && $str === '>') {
             $arrow = $something . $str;
@@ -117,8 +142,24 @@ for ($i = 0; $i <= 90; $i++) {
     if (is_numeric($str)) {
         if ($Minus === '-') {
             $number .= $str;
+            $i++;
             $str = mb_substr($input, $i, 1, "UTF-8");
-            continue;
+            $strString = preg_match('~[a-zA-Z]~', $str);
+            if ($strString) {
+                $result .= $str;
+                $number = '';
+                $str = '';
+                $Plus = '';
+                continue;
+            } else {
+                $i -= --$number;
+                $str = mb_substr($input, $i, 1, "UTF-8");
+                $number = '';
+                $Plus = '';
+//                $str = '';
+                continue;
+            }
+
         }
         if ($Plus === '+') {
             $number .= $str;
@@ -170,14 +211,24 @@ for ($i = 0; $i <= 90; $i++) {
                     $str = '';
                     continue;
                 }
-
             }
             if ($Minus === '-') {
-                $i = $number;
+                $i -= --$number;
                 $str = mb_substr($input, $i, 1, "UTF-8");
-                continue;
+                $strString = preg_match('~[a-zA-Z]~', $str);
+                if ($strString) {
+                    $result .= $str;
+                    $str = '';
+                    $Minus = '';
+                    $number = '';
+                    continue;
+                } else {
+                    $str = mb_substr($input, $i, 1, "UTF-8");
+                    $number = '';
+                    $str = '';
+                    continue;
+                }
             }
-
         }
 
     $strP = preg_match('~[a-zA-Z0-9]~', $str);
