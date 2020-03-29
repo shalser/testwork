@@ -8,7 +8,8 @@ $Minus = '';
 $str = '';
 $i = 0;
 $something = '';
-$somethingDigits = '';
+$somethingString = '';
+$someSomethingString = '';
 $result = '';
 $count = '';
 //$str = mb_substr($input, 29, 1, "UTF-8");
@@ -24,6 +25,22 @@ for ($i = 0; $i <= 90; $i++) {
     if ($str === '') {
         $str = mb_substr($input, $i, 1, "UTF-8");
         continue;
+    }
+    $strString = preg_match('~[a-zA-Z]~', $str);
+    if ($strString) {
+        $somethingString = $str;
+        $i++;
+        $str = mb_substr($input, $i, 1, "UTF-8");
+    } if ($strString) {
+        $someSomethingString = $str;
+        $i++;
+        $str = mb_substr($input, $i, 1, "UTF-8");
+    } if ($strString) {
+        $result .= $somethingString . $someSomethingString . $str;
+        $i++;
+        $str = mb_substr($input, $i, 1, "UTF-8");
+    } if ($strString) {
+        $result .= $str;
     }
 
     if ($str === ' ') {
@@ -58,12 +75,39 @@ for ($i = 0; $i <= 90; $i++) {
     if ($something === '+' && is_numeric($str)) {
         $Plus = $something;
         $number .= $str;
-        $str = mb_substr($input, $i, 1, "UTF-8");
         $something = '';
-        continue;
+        $str = mb_substr($input, $i, 1, "UTF-8");
+        $strString = preg_match('~[a-zA-Z]~', $str);
+        if ($strString && $number !== '' && $Plus === '+') {
+            $i += $number;
+            $str = mb_substr($input, $i, 1, "UTF-8");
+            $strString = preg_match('~[a-zA-Z]~', $str);
+            if ($strString) {
+                $somethingString = $str;
+                $i++;
+                $str = mb_substr($input, $i, 1, "UTF-8");
+                $strString = preg_match('~[a-zA-Z]~', $str);
+                if ($strString) {
+                    $somethingString = $str;
+                    $i++;
+                    $str = mb_substr($input, $i, 1, "UTF-8");
+                    $strString = preg_match('~[a-zA-Z]~', $str);
+                } else {
+                    $result .= $somethingString;
+//                    $str = '';
+                    $Plus = '';
+                    $number = '';
+                    continue;
+                }
+            }
+            continue;
+        } else {
+            continue;
+        }
     }
     if ($something === '-' && is_numeric($str)) {
         $Minus = $something;
+        $number .= $str;
         $str = mb_substr($input, $i, 1, "UTF-8");
         $something = '';
         continue;
@@ -86,10 +130,22 @@ for ($i = 0; $i <= 90; $i++) {
         if ($Plus === '+') {
             $number .= $str;
             $str = mb_substr($input, $i, 1, "UTF-8");
-            $result = $str;
-            $number = '';
-            $str = '';
-            continue;
+            $strString = preg_match('~[a-zA-Z]~', $str);
+            if ($strString) {
+                $result .= $str;
+                $number = '';
+                $str = '';
+                $Plus = '';
+                continue;
+            } else {
+                $i += $number;
+                $str = mb_substr($input, $i, 1, "UTF-8");
+                $number = '';
+                $Plus = '';
+//                $str = '';
+                continue;
+            }
+
         }
         if ($arrow === '->') {
             $number .= $str;
@@ -110,14 +166,14 @@ for ($i = 0; $i <= 90; $i++) {
         if ($arrow === '->' && $number !== '' && !is_numeric($str) && !$strP) {
             continue;
         }
-        if ($Plus === '+' && ($str === '-' || $str === '+')) {
-            $i = $count;
-            $i += --$number;
-            $str = mb_substr($input, $i, 1, "UTF-8");
-            $Plus = '';
-            $number = '';
-            continue;
-        }
+//        if ($Plus === '+' && ($str === '-' || $str === '+')) {
+//            $i = $count;
+//            $i += --$number;
+//            $str = mb_substr($input, $i, 1, "UTF-8");
+//            $Plus = '';
+//            $number = '';
+//            continue;
+//        }
             if ($Plus === '+') {
                 $i += --$number;
                 $str = mb_substr($input, $i, 1, "UTF-8");
