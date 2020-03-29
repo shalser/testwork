@@ -8,41 +8,36 @@ $Minus = '';
 $str = '';
 $i = 0;
 $something = '';
-$somethingString = '';
-$someSomethingString = '';
 $result = '';
 $count = '';
-//$str = mb_substr($input, 29, 1, "UTF-8");
-//echo $str;
-//die();
 
 
 
 
 for ($i = 0; $i <= 90; $i++) {
 
+    if ($i == 90) {
+        echo $result;
+    }
 
     if ($str === '') {
         $str = mb_substr($input, $i, 1, "UTF-8");
         continue;
     }
     $strString = preg_match('~[a-zA-Z]~', $str);
-    if ($strString) {
-        $somethingString = $str;
-        $i++;
-        $str = mb_substr($input, $i, 1, "UTF-8");
-    } if ($strString) {
-        $someSomethingString = $str;
-        $i++;
-        $str = mb_substr($input, $i, 1, "UTF-8");
-    } if ($strString) {
-        $result .= $somethingString . $someSomethingString . $str;
-        $i++;
-        $str = mb_substr($input, $i, 1, "UTF-8");
-    } if ($strString) {
+    if ($strString && $Plus === '' && $Minus === '' && $something === '' && $arrow === '') {
         $result .= $str;
+        $str = mb_substr($input, $i, 1, "UTF-8");
+        continue;
     }
 
+    if ($str === '!') {
+        $result .= $str;
+        $strString = preg_match('~[a-zA-Z]~', $str);
+        $i++;
+        $str = mb_substr($input, $i, 1, "UTF-8");
+        continue;
+    }
     if ($str === ' ') {
         $result .= $str;
         $str = mb_substr($input, $i, 1, "UTF-8");
@@ -83,18 +78,16 @@ for ($i = 0; $i <= 90; $i++) {
             $str = mb_substr($input, $i, 1, "UTF-8");
             $strString = preg_match('~[a-zA-Z]~', $str);
             if ($strString) {
-                $somethingString = $str;
+                $result .= $str;
                 $i++;
                 $str = mb_substr($input, $i, 1, "UTF-8");
                 $strString = preg_match('~[a-zA-Z]~', $str);
                 if ($strString) {
-                    $somethingString = $str;
+                    $result .= $str;
                     $i++;
                     $str = mb_substr($input, $i, 1, "UTF-8");
                     $strString = preg_match('~[a-zA-Z]~', $str);
                 } else {
-                    $result .= $somethingString;
-//                    $str = '';
                     $Plus = '';
                     $number = '';
                     continue;
@@ -129,6 +122,7 @@ for ($i = 0; $i <= 90; $i++) {
         }
         if ($Plus === '+') {
             $number .= $str;
+            $i++;
             $str = mb_substr($input, $i, 1, "UTF-8");
             $strString = preg_match('~[a-zA-Z]~', $str);
             if ($strString) {
@@ -138,7 +132,7 @@ for ($i = 0; $i <= 90; $i++) {
                 $Plus = '';
                 continue;
             } else {
-                $i += $number;
+                $i += --$number;
                 $str = mb_substr($input, $i, 1, "UTF-8");
                 $number = '';
                 $Plus = '';
@@ -154,26 +148,12 @@ for ($i = 0; $i <= 90; $i++) {
         }
         continue;
     }
-//    if ($strString) {
-//        $result .= $str;
-//        $count = $i;
-//        $str = mb_substr($input, $i, 1, "UTF-8");
-//        continue;
-//    }
 
     $strP = preg_match('~[a-zA-Z0-9]~', $str);
     if (($arrow === '->' || $Plus === '+' || $Minus === '-') && (!$strP)) {
         if ($arrow === '->' && $number !== '' && !is_numeric($str) && !$strP) {
             continue;
         }
-//        if ($Plus === '+' && ($str === '-' || $str === '+')) {
-//            $i = $count;
-//            $i += --$number;
-//            $str = mb_substr($input, $i, 1, "UTF-8");
-//            $Plus = '';
-//            $number = '';
-//            continue;
-//        }
             if ($Plus === '+') {
                 $i += --$number;
                 $str = mb_substr($input, $i, 1, "UTF-8");
@@ -218,10 +198,3 @@ for ($i = 0; $i <= 90; $i++) {
         }
     }
 }
-
-
-
-
-
-
-
