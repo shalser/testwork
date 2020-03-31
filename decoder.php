@@ -16,14 +16,14 @@ $count = '';
 
 for ($i = 0; $i <= 90; $i++) {
 
-    if ($i == 90) {
-        echo $result;
-    }
-
     if ($str === '') {
         $str = mb_substr($input, $i, 1, "UTF-8");
-        continue;
+        if ($str === '') {
+            echo $result;
+            break;
+        }
     }
+
     $strString = preg_match('~[a-zA-Z]~', $str);
     if ($strString && $Plus === '' && $Minus === '' && $something === '' && $arrow === '') {
         $result .= $str;
@@ -43,7 +43,6 @@ for ($i = 0; $i <= 90; $i++) {
         $str = mb_substr($input, $i, 1, "UTF-8");
         continue;
     }
-
 
     if ($str === '>' && $something === '-') {
         $arrow = $something . $str;
